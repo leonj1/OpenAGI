@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "openagi": "./run-claude.js"
+    "openagi": "run-claude.js"
   },
   "scripts": {
     "start": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' --loader ts-node/esm --experimental-specifier-resolution=node --experimental-json-modules src/index.ts",
