@@ -1,6 +1,6 @@
 {
   "name": "open-agi",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "AI-powered coding assistant with direct filesystem access. No login required, just your API key.",
   "main": "dist/index.js",
   "type": "module",
