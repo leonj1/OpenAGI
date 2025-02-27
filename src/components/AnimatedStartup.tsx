@@ -108,17 +108,17 @@ export function AnimatedStartup({ onComplete }: Props): React.ReactNode {
     <Box flexDirection="column" alignItems="center" justifyContent="center" padding={2}>
       {showLogo ? (
         <Box flexDirection="column" alignItems="center" gap={1}>
-          <Text bold color={theme.claude}>
+          <Text bold color={theme.openagi}>
             OPEN AGI ACTIVATED
           </Text>
-          <Text color={theme.claude}>
+          <Text color={theme.openagi}>
             <AnimatedClaudeAsterisk size="large" />
           </Text>
         </Box>
       ) : (
         <>
           <Box marginY={1}>
-            <Text color={theme.claude}>{frames[frameIndex]}</Text>
+            <Text color={theme.openagi}>{frames[frameIndex]}</Text>
           </Box>
           <Box>
             <Text color={theme.secondaryText}>{messages[messageIndex]}</Text>

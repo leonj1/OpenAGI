@@ -294,7 +294,7 @@ export function StickerRequestForm({
     <>
       <Box flexDirection="column" alignItems="center" justifyContent="center">
         <Text>{classifiedHeaderText}</Text>
-        <Text bold color={theme.claude}>
+        <Text bold color={theme.openagi}>
           {headerText}
         </Text>
       </Box>
@@ -506,7 +506,7 @@ export function StickerRequestForm({
   return (
     <Box flexDirection="column" paddingLeft={1}>
       <Box
-        borderColor={theme.claude}
+        borderColor={theme.openagi}
         borderStyle="round"
         flexDirection="column"
         gap={1}

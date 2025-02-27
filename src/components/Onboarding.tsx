@@ -22,12 +22,10 @@ import { clearTerminal } from '../utils/terminal.js'
 import { PressEnterToContinue } from './PressEnterToContinue.js'
 import { MACRO } from '../constants/version.js'
 import { AsciiLogo } from './AsciiLogo.js'
-import { AnimatedClaudeAsterisk } from './AnimatedClaudeAsterisk.js'
-import { Spinner, SimpleSpinner } from './Spinner.js'
-import { AnimatedStartup } from './AnimatedStartup.js'
+import { SimpleSpinner } from './Spinner.js'
 import { ModelConfigStep } from './ModelConfigStep.js'
 
-type StepId = 'theme' | 'oauth' | 'api-key' | 'usage' | 'security' | 'welcome' | 'model-config'
+type StepId = 'theme' | 'oauth' | 'api-key' | 'usage' | 'security' | 'welcome' | 'model-config' | 'about'
 
 interface OnboardingStep {
   id: StepId
@@ -37,18 +35,6 @@ interface OnboardingStep {
 type Props = {
   onDone(): void
 }
-
-// ASCII art frames for typing animation
-const typingFrames = [
-  `   _
-  / \\
- /   \\
-/     \\`,
-  `   _
-  / \\
- /   \\
-/_____\\`,
-]
 
 // Fancy border frames
 const borders = {
@@ -87,7 +73,7 @@ function FancyBox({
         {title ? (
           <>
             <Text color={color}>{horizontalBorder(2)}</Text>
-            <Text color={theme.claude} bold> {title} </Text>
+            <Text color={theme.openagi} bold> {title} </Text>
             <Text color={color}>{horizontalBorder(contentWidth - title.length - 4)}</Text>
           </>
         ) : (
@@ -116,68 +102,32 @@ function FancyBox({
   )
 }
 
-// Fancy typing animation effect component
-function TypingEffect({ text, speed = 50 }: { text: string, speed?: number }) {
-  const [displayText, setDisplayText] = useState('')
-  const [isComplete, setIsComplete] = useState(false)
-  const textIndex = React.useRef(0)
-  const theme = getTheme()
-
-  useEffect(() => {
-    if (textIndex.current < text.length) {
-      const timer = setTimeout(() => {
-        setDisplayText(prev => prev + text[textIndex.current])
-        textIndex.current += 1
-      }, speed)
-      return () => clearTimeout(timer)
-    } else if (!isComplete) {
-      setIsComplete(true)
-    }
-  }, [displayText, text, speed, isComplete])
-
-  return (
-    <Box>
-      <Text>{displayText}</Text>
-      {!isComplete && <AnimatedClaudeAsterisk size="small" intervalMs={300} />}
-    </Box>
-  )
-}
-
 export function Onboarding({ onDone }: Props): React.ReactNode {
-  const [showStartupAnimation, setShowStartupAnimation] = useState(true)
+  // Avoid clearing terminal immediately on mount which causes empty screen
+  // Instead, we'll make sure our initial render is immediate and visible
+  const [isInitialized, setIsInitialized] = useState(false)
+  
+  // Only clear terminal when changing steps after initial render
+  useEffect(() => {
+    // Set initialized after first render
+    setIsInitialized(true)
+  }, []);
+
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const config = getGlobalConfig()
-  const oauthEnabled = isAnthropicAuthEnabled()
   const [selectedTheme, setSelectedTheme] = useState(
     DEFAULT_GLOBAL_CONFIG.theme,
   )
   const theme = getTheme()
-  const [showTypingEffect, setShowTypingEffect] = useState(true)
-  const [typingAnimationIndex, setTypingAnimationIndex] = useState(0)
   const [easterEggActivated, setEasterEggActivated] = useState(false)
   const [konami, setKonami] = useState<string[]>([])
   const konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a']
 
-  // Typing animation for terminal effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTypingAnimationIndex(prev => (prev + 1) % typingFrames.length)
-    }, 500)
-    return () => clearInterval(timer)
-  }, [])
-
-  // Auto-hide typing effect after a few seconds in welcome screen
-  useEffect(() => {
-    if (currentStepIndex === 0 && showTypingEffect) {
-      const timer = setTimeout(() => {
-        setShowTypingEffect(false)
-      }, 4000)
-      return () => clearTimeout(timer)
-    }
-  }, [currentStepIndex, showTypingEffect])
-
   function goToNextStep() {
     if (currentStepIndex < steps.length - 1) {
+      // Clear terminal between steps, but not on initial render
+      process.stdout.write('\x1Bc');
+      clearTerminal();
       const nextIndex = currentStepIndex + 1
       setCurrentStepIndex(nextIndex)
     }
@@ -213,15 +163,14 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
     if (
       key.return &&
       currentStep &&
-      ['welcome', 'usage', 'security'].includes(currentStep.id)
+      ['welcome', 'about', 'usage', 'security'].includes(currentStep.id)
     ) {
+      // Clear terminal before navigating to next step
+      process.stdout.write('\x1Bc');
+      await clearTerminal();
       if (currentStepIndex === steps.length - 1) {
         onDone()
       } else {
-        // HACK: for some reason there's now a jump here otherwise :(
-        if (currentStep.id === 'security') {
-          await clearTerminal()
-        }
         goToNextStep()
       }
     }
@@ -258,57 +207,64 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
     }
   })
 
-  // Welcome screen with animations and ASCII art
+  // Welcome screen with static content - showing only logo and welcome message
   const welcomeStep = (
-    <Box flexDirection="column" gap={1} paddingLeft={1}>
+    <Box flexDirection="column" gap={1} alignItems="center" paddingLeft={1}>
       <AsciiLogo />
       
+      <Box marginY={2} marginTop={3}>
+        <Text bold color={theme.openagi} backgroundColor={theme.text}>
+          Welcome to {PRODUCT_NAME}! 
+        </Text>
+      </Box>
+      
+      <Box marginTop={3}>
+        <Text color={theme.permission}>
+          Press <Text bold>Enter</Text> to start your personalized setup...
+        </Text>
+      </Box>
+    </Box>
+  )
+
+  // About and features step added separately
+  const aboutStep = (
+    <Box flexDirection="column" gap={1} paddingLeft={1}>
       <Box marginY={1}>
-        <AnimatedClaudeAsterisk size="medium" />
-        <Text bold color={theme.claude}> Welcome to {PRODUCT_NAME}!</Text>
+        <Text color={theme.openagi} bold>About {PRODUCT_NAME}</Text>
       </Box>
       
       <FancyBox title="About" borderColor="claude" width={72}>
         <Box flexDirection="column" gap={1}>
-          {showTypingEffect ? (
-            <TypingEffect 
-              text={`${PRODUCT_NAME} is an advanced AI coding assistant that helps you analyze, edit, and understand code through natural language.`} 
-              speed={30}
-            />
-          ) : (
-            <>
-              <Text>
-                {PRODUCT_NAME} is an advanced AI coding assistant that helps you analyze, 
-                edit, and understand code through natural language.
-              </Text>
-              <Text>
-                Powered by Claude's advanced reasoning capabilities, it can work with your
-                projects to solve complex problems and enhance your development workflow.
-              </Text>
-            </>
-          )}
+          <Text>
+            {PRODUCT_NAME} is an advanced AI coding assistant that helps you analyze, 
+            edit, and understand code through natural language.
+          </Text>
+          <Text>
+            Powered by Claude's advanced reasoning capabilities, it can work with your
+            projects to solve complex problems and enhance your development workflow.
+          </Text>
         </Box>
       </FancyBox>
       
       <FancyBox title="Features" width={72}>
         <Box flexDirection="column" gap={1}>
           <Box>
-            <Text color={theme.claude}>✦</Text>
+            <Text color={theme.openagi}>✦</Text>
             <Text bold> Code Analysis </Text>
             <Text dimColor>- Deep understanding of your codebase structure</Text>
           </Box>
           <Box>
-            <Text color={theme.claude}>✦</Text>
+            <Text color={theme.openagi}>✦</Text>
             <Text bold> Intelligent Editing </Text>
             <Text dimColor>- Precise file modifications based on your needs</Text>
           </Box>
           <Box>
-            <Text color={theme.claude}>✦</Text>
+            <Text color={theme.openagi}>✦</Text>
             <Text bold> Shell Commands </Text>
             <Text dimColor>- Run and explain terminal operations</Text>
           </Box>
           <Box>
-            <Text color={theme.claude}>✦</Text>
+            <Text color={theme.openagi}>✦</Text>
             <Text bold> Natural Conversations </Text>
             <Text dimColor>- Talk about your code like you would with a colleague</Text>
           </Box>
@@ -317,18 +273,17 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
       
       <Box marginTop={1}>
         <Text color={theme.permission}>
-          Press <Text bold>Enter</Text> to start your personalized setup...
+          Press <Text bold>Enter</Text> to continue...
         </Text>
       </Box>
     </Box>
   )
 
-  // Define all onboarding steps
+  // Define all onboarding steps with no animations
   const themeStep = (
     <Box flexDirection="column" gap={1} paddingLeft={1}>
       <Box marginY={1}>
-        <AnimatedClaudeAsterisk size="small" />
-        <Text color={theme.claude} bold> Personalize Your Experience</Text>
+        <Text color={theme.openagi} bold>Personalize Your Experience</Text>
       </Box>
 
       <FancyBox title="Theme Selection" width={75}>
@@ -385,20 +340,13 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
           </Box>
         </Box>
       </FancyBox>
-      
-      <Box marginTop={1} flexDirection="column" alignItems="center">
-        <Text color={theme.secondaryText} italic>
-          {typingFrames[typingAnimationIndex]}
-        </Text>
-      </Box>
     </Box>
   )
 
   const securityStep = (
     <Box flexDirection="column" gap={1} paddingLeft={1}>
       <Box marginY={1}>
-        <AnimatedClaudeAsterisk size="small" />
-        <Text color={theme.claude} bold> Security Information</Text>
+        <Text color={theme.openagi} bold>Security Information</Text>
       </Box>
 
       <FancyBox title="Security Notes" width={72} borderColor="warning">
@@ -437,7 +385,6 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
       </FancyBox>
       
       <Box marginTop={1} flexDirection="column">
-        <SimpleSpinner />
         <PressEnterToContinue />
       </Box>
     </Box>
@@ -446,8 +393,7 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
   const usageStep = (
     <Box flexDirection="column" gap={1} paddingLeft={1}>
       <Box marginY={1}>
-        <AnimatedClaudeAsterisk size="small" />
-        <Text color={theme.claude} bold> Getting Started</Text>
+        <Text color={theme.openagi} bold>Getting Started</Text>
       </Box>
 
       <FancyBox title="Best Practices" width={72} borderColor="success">
@@ -485,8 +431,8 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
             </OrderedList.Item>
           </OrderedList>
           
-          <Box marginTop={1} paddingX={1} borderStyle="single" borderColor={theme.claude}>
-            <Text bold color={theme.claude}>
+          <Box marginTop={1} paddingX={1} borderStyle="single" borderColor={theme.openagi}>
+            <Text bold color={theme.openagi}>
               For more details on {PRODUCT_NAME}, see:
               <Newline />
               <Link url={MACRO.README_URL} />
@@ -496,7 +442,6 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
       </FancyBox>
       
       <Box marginTop={1} flexDirection="column">
-        <SimpleSpinner />
         <PressEnterToContinue />
       </Box>
     </Box>
@@ -507,54 +452,20 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
     <ModelConfigStep onComplete={handleModelConfig} />
   )
 
-  // Create the steps array - determine which steps to include based on reAuth and oauthEnabled
-  const apiKeyNeedingApproval = useMemo(() => {
-    if (process.env.USER_TYPE !== 'ant') {
-      return ''
-    }
-    // Add API key step if needed
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return ''
-    }
-    const customApiKeyTruncated = normalizeApiKeyForConfig(
-      process.env.ANTHROPIC_API_KEY!,
-    )
-    if (getCustomApiKeyStatus(customApiKeyTruncated) === 'new') {
-      return customApiKeyTruncated
-    }
-  }, [])
-
+  // Create the steps array
   const steps: OnboardingStep[] = []
   
   // Add welcome step
   steps.push({ id: 'welcome', component: welcomeStep })
+  
+  // Add about step
+  steps.push({ id: 'about', component: aboutStep })
   
   // Add theme step
   steps.push({ id: 'theme', component: themeStep })
   
   // Add model configuration step
   steps.push({ id: 'model-config', component: modelConfigStep })
-
-  // Skip OAuth step - authentication is disabled
-  // if (oauthEnabled) {
-  //   steps.push({
-  //     id: 'oauth',
-  //     component: <ConsoleOAuthFlow onDone={goToNextStep} />,
-  //   })
-  // }
-
-  // Skip API key step - authentication is disabled
-  // if (apiKeyNeedingApproval) {
-  //   steps.push({
-  //     id: 'api-key',
-  //     component: (
-  //       <ApproveApiKey
-  //         customApiKeyTruncated={apiKeyNeedingApproval}
-  //         onDone={goToNextStep}
-  //       />
-  //     ),
-  //   })
-  // }
 
   // Add security step
   steps.push({ id: 'security', component: securityStep })
@@ -586,21 +497,10 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
     </Box>
   ) : null
   
-  // If we're showing the startup animation, render only that
-  if (showStartupAnimation) {
-    return (
-      <AnimatedStartup 
-        onComplete={() => setShowStartupAnimation(false)} 
-      />
-    )
-  }
-
   return (
     <Box flexDirection="column" gap={1}>
       {easterEggOverlay}
-      {/* OAuth uses static rendering so we need to hide welcome box here
-          and re-render it inside ConsoleOAuthFlow to preserve layout */}
-      {steps[currentStepIndex]?.id !== 'oauth' && <EnhancedWelcomeBox step={currentStepIndex + 1} totalSteps={steps.length} />}
+      <SimpleWelcomeBox step={currentStepIndex + 1} totalSteps={steps.length} />
       <Box flexDirection="column" padding={0} gap={0}>
         {steps[currentStepIndex]?.component}
         {exitState.pending && (
@@ -617,32 +517,33 @@ export function WelcomeBox(): React.ReactNode {
   const theme = getTheme()
   return (
     <Box
-      borderColor={theme.claude}
+      borderColor={theme.openagi}
       borderStyle="round"
       paddingX={1}
       width={MIN_LOGO_WIDTH}
     >
       <Text>
-        <Text color={theme.claude}>✻</Text> Welcome to{' '}
+        <Text color={theme.openagi}>✻</Text> Welcome to{' '}
         <Text bold>{PRODUCT_NAME}</Text> research preview!
       </Text>
     </Box>
   )
 }
 
-function EnhancedWelcomeBox({ step, totalSteps }: { step: number, totalSteps: number }): React.ReactNode {
+// Simplified welcome box with no animations
+function SimpleWelcomeBox({ step, totalSteps }: { step: number, totalSteps: number }): React.ReactNode {
   const theme = getTheme()
   return (
     <Box
-      borderColor={theme.claude}
+      borderColor={theme.openagi}
       borderStyle="round"
       paddingX={1}
       width={MIN_LOGO_WIDTH}
     >
       <Text>
-        <AnimatedClaudeAsterisk size="small" intervalMs={200} />
+        <Text color={theme.openagi}>✻</Text>
         <Text> Welcome to </Text>
-        <Text bold color={theme.claude}>{PRODUCT_NAME}</Text>
+        <Text bold color={theme.openagi}>{PRODUCT_NAME}</Text>
         <Text> research preview! </Text>
         <Text dimColor>[{step}/{totalSteps}]</Text>
       </Text>

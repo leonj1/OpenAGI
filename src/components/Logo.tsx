@@ -35,7 +35,7 @@ export function Logo({
   return (
     <Box flexDirection="column">
       <Box
-        borderColor={theme.claude}
+        borderColor={theme.openagi}
         borderStyle="round"
         flexDirection="column"
         gap={1}
@@ -43,7 +43,7 @@ export function Logo({
         width={width}
       >
         <Text>
-          <Text color={theme.claude}>✻</Text> Welcome to{' '}
+          <Text color={theme.openagi}>✻</Text> Welcome to{' '}
           <Text bold>{PRODUCT_NAME}</Text> <Text>research preview!</Text>
         </Text>
         <>

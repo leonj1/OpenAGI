@@ -62,7 +62,7 @@ export function AnimatedClaudeAsterisk({
   }, [animatedArray.length, cycles, intervalMs, size])
 
   return (
-    <Text color={color || theme.claude}>
+    <Text color={color || theme.openagi}>
       {animatedArray[currentAsciiArtIndex]}
     </Text>
   )

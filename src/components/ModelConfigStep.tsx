@@ -3,7 +3,6 @@ import { Box, Text, useInput } from 'ink'
 import { getTheme } from '../utils/theme.js'
 import TextInput from './TextInput.js'
 import { Select } from './CustomSelect/select.js'
-import { AnimatedClaudeAsterisk } from './AnimatedClaudeAsterisk.js'
 import { SimpleSpinner } from './Spinner.js'
 import { PRODUCT_NAME } from '../constants/product.js'
 
@@ -98,11 +97,10 @@ export function ModelConfigStep({ onComplete }: ModelConfigStepProps): React.Rea
   return (
     <Box flexDirection="column" gap={1} paddingLeft={1}>
       <Box marginY={1}>
-        <AnimatedClaudeAsterisk size="small" />
-        <Text color={theme.claude} bold> Connect Your AI Model</Text>
+        <Text color={theme.openagi} bold>Connect Your AI Model</Text>
       </Box>
 
-      <Box flexDirection="column" gap={1} borderStyle="round" borderColor={theme.claude} padding={1}>
+      <Box flexDirection="column" gap={1} borderStyle="round" borderColor={theme.openagi} padding={1}>
         <Text>
           {PRODUCT_NAME} needs to connect to an AI model to provide assistance.
         </Text>
@@ -151,7 +149,7 @@ export function ModelConfigStep({ onComplete }: ModelConfigStepProps): React.Rea
             />
             <Box marginLeft={1}>
               <Text 
-                color={focusedElement === 'show' ? theme.claude : theme.secondaryText} 
+                color={focusedElement === 'show' ? theme.openagi : theme.secondaryText} 
                 underline 
                 dimColor={apiKeyVisible}
               >
@@ -176,13 +174,13 @@ export function ModelConfigStep({ onComplete }: ModelConfigStepProps): React.Rea
           ) : (
             <Box>
               <Text 
-                backgroundColor={theme.claude} 
+                backgroundColor={theme.openagi} 
                 color={theme.text} 
                 bold
+                paddingLeft={2} 
+                paddingRight={2}
               >
-                <Box paddingLeft={2} paddingRight={2}>
-                  Connect
-                </Box>
+                Connect
               </Text>
             </Box>
           )}

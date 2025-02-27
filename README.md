@@ -258,3 +258,48 @@ ANTHROPIC_API_KEY=your_api_key_here
 ## License
 
 MIT (feel free to do whatever, I'm not your boss)
+
+## Running the CLI
+
+There are several ways to run OpenAGI:
+
+### Global Installation
+After installing the package globally with `npm install -g open-agi`:
+```
+openagi [options] [prompt]
+```
+
+### Local Development
+When working on OpenAGI locally, you can run the CLI using:
+
+1. **Using npm script** (recommended):
+   ```
+   npm run cli -- [options] [prompt]
+   ```
+   Note the extra `--` which is needed to pass arguments to the underlying script.
+
+2. **Directly using node**:
+   ```
+   node dist/entrypoints/cli.js [options] [prompt]
+   ```
+
+3. **Using the wrapper script**:
+   ```
+   node cli.js [options] [prompt]
+   ```
+
+### Resetting Onboarding Screens
+
+If you've already completed the onboarding process but want to see it again (for example, to view the startup animation or reconfigure settings), you can reset the onboarding status:
+
+1. **Using npm script**:
+   ```
+   npm run reset:onboarding
+   ```
+
+2. **Using the reset script**:
+   ```
+   node reset-onboarding.js
+   ```
+
+After resetting, run OpenAGI again to see the full onboarding experience, including the animated startup screen.
