@@ -8,8 +8,13 @@
 // Load environment variables from .env file
 import 'dotenv/config';
 import { execSync } from 'child_process';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -117,8 +122,8 @@ console.log('-------------------------------\n');
 
 // Run the CLI with additional arguments
 try {
-  // We need to import dynamically to ensure environment vars are set first
-  const cliPath = join(process.cwd(), 'dist', 'entrypoints', 'cli.js');
+  // Use __dirname to get the package installation directory, not the current working directory
+  const cliPath = join(__dirname, 'dist', 'entrypoints', 'cli.js');
   
   // Execute directly to maintain interactive input
   const { spawn } = await import('child_process');
