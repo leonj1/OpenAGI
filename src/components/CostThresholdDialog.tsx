@@ -1,8 +1,9 @@
 import { Box, Text, useInput } from 'ink'
 import React from 'react'
-import { Select } from './CustomSelect/index.js'
+import { Select } from './CustomSelect/select.js'
 import { getTheme } from '../utils/theme.js'
 import Link from './Link.js'
+import { MACRO } from 'constants/version.js'
 
 interface Props {
   onDone: () => void
@@ -28,7 +29,7 @@ export function CostThresholdDialog({ onDone }: Props): React.ReactNode {
           You&apos;ve spent $5 on the Anthropic API this session.
         </Text>
         <Text>Learn more about how to monitor your spending:</Text>
-        <Link url="https://docs.anthropic.com/s/claude-code-cost" />
+        <Link url={MACRO.COST_THRESHOLD_URL} />
       </Box>
       <Box>
         <Select

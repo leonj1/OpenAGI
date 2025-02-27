@@ -1,4 +1,4 @@
-import type { TextBlock } from '@anthropic-ai/sdk/resources/index.mjs'
+import type { TextBlock } from '@anthropic-ai/sdk/resources/'
 import { Box } from 'ink'
 import * as React from 'react'
 import { z } from 'zod'

@@ -1,4 +1,4 @@
-import { ToolUseBlockParam } from '@anthropic-ai/sdk/resources/index.mjs'
+import { ToolUseBlockParam } from '@anthropic-ai/sdk/resources/'
 import { Message } from '../../../query.js'
 import { useMemo } from 'react'
 import { Tool } from '../../../Tool.js'

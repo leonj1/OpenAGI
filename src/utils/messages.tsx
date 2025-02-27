@@ -23,7 +23,7 @@ import {
   Message as APIMessage,
   ContentBlockParam,
   ContentBlock,
-} from '@anthropic-ai/sdk/resources/index.mjs'
+} from '@anthropic-ai/sdk/resources/'
 import { setCwd } from './state.js'
 import { getCwd } from './state.js'
 import chalk from 'chalk'
@@ -31,7 +31,7 @@ import * as React from 'react'
 import { UserBashInputMessage } from '../components/messages/UserBashInputMessage.js'
 import { Spinner } from '../components/Spinner.js'
 import { BashTool } from '../tools/BashTool/BashTool.js'
-import { ToolUseBlock } from '@anthropic-ai/sdk/resources/index.mjs'
+import { ToolUseBlock } from '@anthropic-ai/sdk/resources/'
 
 export const INTERRUPT_MESSAGE = '[Request interrupted by user]'
 export const INTERRUPT_MESSAGE_FOR_TOOL_USE =

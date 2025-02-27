@@ -1,6 +1,7 @@
 import React from 'react'
 import { Text } from 'ink'
 import Link from 'ink-link'
+import { MACRO } from 'constants/version.js'
 
 export function MCPServerDialogCopy(): React.ReactNode {
   return (
@@ -10,7 +11,7 @@ export function MCPServerDialogCopy(): React.ReactNode {
         code, make network requests, or access system resources via tool calls.
         All tool calls will require your explicit approval before execution. For
         more information, see{' '}
-        <Link url="https://docs.anthropic.com/s/claude-code-mcp">
+        <Link url={MACRO.MCP_URL}>
           MCP documentation
         </Link>
       </Text>

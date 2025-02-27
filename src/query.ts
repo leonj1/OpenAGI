@@ -2,9 +2,9 @@ import {
   Message as APIAssistantMessage,
   MessageParam,
   ToolUseBlock,
-} from '@anthropic-ai/sdk/resources/index.mjs'
+} from '@anthropic-ai/sdk/resources'
 import { UUID } from 'crypto'
-import type { Tool, ToolUseContext } from './Tool.js'
+import type { Tool, ToolUseCoantext } from './Tool.js'
 import {
   messagePairValidForBinaryFeedback,
   shouldUseBinaryFeedback,

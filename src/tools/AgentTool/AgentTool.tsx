@@ -1,4 +1,4 @@
-import { TextBlock } from '@anthropic-ai/sdk/resources/index.mjs'
+import { TextBlock } from '@anthropic-ai/sdk/resources/'
 import chalk from 'chalk'
 import { last, memoize } from 'lodash-es'
 import { EOL } from 'os'

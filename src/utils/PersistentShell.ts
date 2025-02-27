@@ -48,17 +48,40 @@ export class PersistentShell {
   private cwdFile: string
   private cwd: string
   private binShell: string
+  private isWindows: boolean
 
   constructor(cwd: string) {
-    this.binShell = process.env.SHELL || '/bin/bash'
-    this.shell = spawn(this.binShell, ['-l'], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-      cwd,
-      env: {
-        ...process.env,
-        GIT_EDITOR: 'true',
-      },
-    })
+    this.isWindows = process.platform === 'win32';
+    
+    // Select appropriate shell based on platform
+    if (this.isWindows) {
+      // On Windows, use PowerShell if available, otherwise cmd
+      this.binShell = process.env.ComSpec || 'cmd.exe';
+      
+      // Spawn the Windows shell
+      this.shell = spawn(this.binShell, [], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+        cwd,
+        shell: true,
+        env: {
+          ...process.env,
+          GIT_EDITOR: 'true',
+        },
+      });
+    } else {
+      // On Unix systems, use the user's shell or default to bash
+      this.binShell = process.env.SHELL || '/bin/bash';
+      
+      // Spawn the Unix shell with login mode
+      this.shell = spawn(this.binShell, ['-l'], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+        cwd,
+        env: {
+          ...process.env,
+          GIT_EDITOR: 'true',
+        },
+      });
+    }
 
     this.cwd = cwd
 
@@ -97,11 +120,15 @@ export class PersistentShell {
     }
     // Initialize CWD file with initial directory
     fs.writeFileSync(this.cwdFile, cwd)
-    const configFile = SHELL_CONFIGS[this.binShell]
-    if (configFile) {
-      const configFilePath = join(homedir(), configFile)
-      if (existsSync(configFilePath)) {
-        this.sendToShell(`source ${configFilePath}`)
+    
+    // Load shell config files if on Unix
+    if (!this.isWindows) {
+      const configFile = SHELL_CONFIGS[this.binShell]
+      if (configFile) {
+        const configFilePath = join(homedir(), configFile)
+        if (existsSync(configFilePath)) {
+          this.sendToShell(`source ${configFilePath}`)
+        }
       }
     }
   }
@@ -123,7 +150,14 @@ export class PersistentShell {
   }
 
   killChildren() {
-    const parentPid = this.shell.pid
+    const parentPid = this.shell.pid;
+    
+    if (this.isWindows) {
+      // On Windows, simply set the interrupted flag since we can't easily kill child processes
+      this.commandInterrupted = true;
+      return;
+    }
+    
     try {
       const childPids = execSync(`pgrep -P ${parentPid}`)
         .toString()
@@ -231,10 +265,14 @@ export class PersistentShell {
 
     // Check the syntax of the command
     try {
-      execSync(`${this.binShell} -n -c ${quotedCommand}`, {
-        stdio: 'ignore',
-        timeout: 1000,
-      })
+      if (this.isWindows) {
+        // On Windows, we'll skip syntax checking as it's less reliable
+      } else {
+        execSync(`${this.binShell} -n -c ${quotedCommand}`, {
+          stdio: 'ignore',
+          timeout: 1000,
+        })
+      }
     } catch (stderr) {
       // If there's a syntax error, return an error and log it
       const errorStr =

@@ -17,14 +17,11 @@ export const getGitEmail = memoize(async (): Promise<string | undefined> => {
 export const getUser = memoize(async (): Promise<StatsigUser> => {
   const userID = getOrCreateUserID()
   const config = getGlobalConfig()
-  const email =
-    process.env.USER_TYPE === 'ant'
-      ? (config.oauthAccount?.emailAddress ??
-        (await getGitEmail()) ??
-        (process.env.COO_CREATOR
-          ? `${process.env.COO_CREATOR}@anthropic.com`
-          : undefined))
-      : undefined
+  
+  // Provide a default email if none is available
+  const email = process.env.ANTHROPIC_API_KEY 
+    ? 'default@example.com'
+    : (await getGitEmail()) || 'default@example.com';
 
   return {
     customIDs: {
@@ -32,14 +29,14 @@ export const getUser = memoize(async (): Promise<StatsigUser> => {
       sessionId: SESSION_ID,
     },
     userID,
-    appVersion: MACRO.VERSION,
+    appVersion: "1.0.0", // Hard-coded version to avoid MACRO reference
     userAgent: env.platform,
     email,
     custom: {
       nodeVersion: env.nodeVersion,
-      userType: process.env.USER_TYPE,
-      organizationUuid: config.oauthAccount?.organizationUuid,
-      accountUuid: config.oauthAccount?.accountUuid,
+      userType: process.env.USER_TYPE || 'ant', // Default to 'ant' if not set
+      organizationUuid: 'default-org-uuid',
+      accountUuid: 'default-account-uuid',
     },
   }
 })

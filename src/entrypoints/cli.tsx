@@ -1,6 +1,12 @@
 #!/usr/bin/env -S node --no-warnings=ExperimentalWarning --enable-source-maps
+import { MACRO } from '../constants/version.js'
+// Make MACRO globally available before any other imports that might use it
+// @ts-ignore - Extending global object
+global.MACRO = MACRO;
+
 import { initSentry } from '../services/sentry.js'
 import { PRODUCT_NAME } from '../constants/product.js'
+
 initSentry() // Initialize Sentry as early as possible
 
 // XXX: Without this line (and the Object.keys, even though it seems like it does nothing!),
@@ -80,6 +86,11 @@ import { clearTerminal } from '../utils/terminal.js'
 import { showInvalidConfigDialog } from '../components/InvalidConfigDialog.js'
 import { ConfigParseError } from '../utils/errors.js'
 import { grantReadPermissionForOriginalDir } from '../utils/permissions/filesystem.js'
+
+// Create extended RenderOptions with additional properties used in our application
+interface ExtendedRenderOptions extends RenderOptions {
+  onFlicker?: () => void;
+}
 
 export function completeOnboarding(): void {
   const config = getGlobalConfig()
@@ -281,7 +292,7 @@ async function main() {
   }
 
   let inputPrompt = ''
-  let renderContext: RenderOptions | undefined = {
+  let renderContext: ExtendedRenderOptions | undefined = {
     exitOnCtrlC: false,
     onFlicker() {
       logEvent('tengu_flicker', {})
@@ -309,7 +320,7 @@ async function main() {
 
 async function parseArgs(
   stdinContent: string,
-  renderContext: RenderOptions | undefined,
+  renderContext: ExtendedRenderOptions | undefined,
 ): Promise<Command> {
   const program = new Command()
 
@@ -343,7 +354,7 @@ ${commandList}`,
       'Override verbose mode setting from config',
       () => true,
     )
-    .option('-ea, --enable-architect', 'Enable the Architect tool', () => true)
+    .option('-a, --enable-architect', 'Enable the Architect tool', () => true)
     .option(
       '-p, --print',
       'Print response and exit (useful for pipes)',
@@ -819,7 +830,7 @@ ${commandList}`,
       )
       .option('-c, --cwd <cwd>', 'The current working directory', String, cwd())
       .option(
-        '-ea, --enable-architect',
+        '-a, --enable-architect',
         'Enable the Architect tool',
         () => true,
       )

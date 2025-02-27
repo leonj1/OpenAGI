@@ -1,4 +1,4 @@
-import { TextBlockParam } from '@anthropic-ai/sdk/resources/index.mjs'
+import { TextBlockParam } from '@anthropic-ai/sdk/resources/'
 import { UserBashInputMessage } from './UserBashInputMessage.js'
 import { UserCommandMessage } from './UserCommandMessage.js'
 import { UserPromptMessage } from './UserPromptMessage.js'

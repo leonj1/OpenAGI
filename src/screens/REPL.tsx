@@ -1,4 +1,4 @@
-import { ToolUseBlockParam } from '@anthropic-ai/sdk/resources/index.mjs'
+import { ToolUseBlockParam } from '@anthropic-ai/sdk/resources/'
 import { Box, Newline, Static } from 'ink'
 import ProjectOnboarding, {
   markProjectOnboardingComplete,

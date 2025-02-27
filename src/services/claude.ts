@@ -2,7 +2,7 @@ import '@anthropic-ai/sdk/shims/node'
 import Anthropic, { APIConnectionError, APIError } from '@anthropic-ai/sdk'
 import { AnthropicBedrock } from '@anthropic-ai/bedrock-sdk'
 import { AnthropicVertex } from '@anthropic-ai/vertex-sdk'
-import type { BetaUsage } from '@anthropic-ai/sdk/resources/beta/messages/messages.mjs'
+import type { BetaUsage } from '@anthropic-ai/sdk/resources/beta/messages/messages'
 import chalk from 'chalk'
 import { createHash, randomUUID } from 'crypto'
 import 'dotenv/config'
@@ -22,12 +22,12 @@ import { countTokens } from '../utils/tokens.js'
 import { logEvent } from './statsig.js'
 import { withVCR } from './vcr.js'
 import { zodToJsonSchema } from 'zod-to-json-schema'
-import type { BetaMessageStream } from '@anthropic-ai/sdk/lib/BetaMessageStream.mjs'
+import type { BetaMessageStream } from '@anthropic-ai/sdk/lib/BetaMessageStream'
 import type {
   Message as APIMessage,
   MessageParam,
   TextBlockParam,
-} from '@anthropic-ai/sdk/resources/index.mjs'
+} from '@anthropic-ai/sdk/resources/'
 import { SMALL_FAST_MODEL, USE_BEDROCK, USE_VERTEX } from '../utils/model.js'
 import { getCLISyspromptPrefix } from '../constants/prompts.js'
 import { getVertexRegionForModel } from '../utils/model.js'

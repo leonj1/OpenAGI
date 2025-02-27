@@ -96,11 +96,32 @@ const darkDaltonizedTheme: Theme = {
   },
 }
 
+// Custom OpenAGI theme with a futuristic color scheme
+const openAgiTheme: Theme = {
+  bashBorder: '#4a5aef', // Vibrant blue
+  claude: '#6d42c7',     // Purple for primary accent (replaces Claude orange)
+  permission: '#5eead4', // Teal for permissions
+  secondaryBorder: '#9ea3b0',
+  text: '#f0f4fc',       // Slightly off-white for better contrast 
+  secondaryText: '#a0a8c0', // Muted blue-gray
+  suggestion: '#42a5f5', // Blue for suggestions
+  success: '#4ade80',    // Vibrant green
+  error: '#f87171',      // Vibrant red
+  warning: '#fbbf24',    // Amber yellow
+  diff: {
+    added: '#34d399',    // Emerald green
+    removed: '#fb7185',  // Rose red
+    addedDimmed: '#065f46', // Dark green
+    removedDimmed: '#881337', // Dark rose
+  },
+}
+
 export type ThemeNames =
   | 'dark'
   | 'light'
   | 'light-daltonized'
   | 'dark-daltonized'
+  | 'openagi'           // Add the new theme name
 
 export function getTheme(overrideTheme?: ThemeNames): Theme {
   const config = getGlobalConfig()
@@ -111,6 +132,8 @@ export function getTheme(overrideTheme?: ThemeNames): Theme {
       return lightDaltonizedTheme
     case 'dark-daltonized':
       return darkDaltonizedTheme
+    case 'openagi':      // Add the new theme case
+      return openAgiTheme
     default:
       return darkTheme
   }

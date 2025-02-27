@@ -1,4 +1,4 @@
-import { TextBlock, ToolUseBlock } from '@anthropic-ai/sdk/resources/index.mjs'
+import { TextBlock, ToolUseBlock } from '@anthropic-ai/sdk/resources/'
 import { AssistantMessage, BinaryFeedbackResult } from '../../query.js'
 import { MAIN_QUERY_TEMPERATURE } from '../../services/claude.js'
 import { getDynamicConfig, logEvent } from '../../services/statsig.js'
