@@ -3,7 +3,7 @@ import React from 'react'
 import { Select } from './CustomSelect/select.js'
 import { getTheme } from '../utils/theme.js'
 import Link from './Link.js'
-import { MACRO } from 'constants/version.js'
+import { MACRO } from '../constants/version.js'
 
 interface Props {
   onDone: () => void

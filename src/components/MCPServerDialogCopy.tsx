@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text } from 'ink'
 import Link from 'ink-link'
-import { MACRO } from 'constants/version.js'
+import { MACRO } from '../constants/version.js'
 
 export function MCPServerDialogCopy(): React.ReactNode {
   return (

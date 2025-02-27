@@ -12,7 +12,7 @@ import { useExitOnCtrlCD } from '../hooks/useExitOnCtrlCD.js'
 import { homedir } from 'os'
 import { getCwd } from '../utils/state.js'
 import Link from './Link.js'
-import { MACRO } from 'constants/version.js'
+import { MACRO } from '../constants/version.js'
 
 type Props = {
   onDone(): void
