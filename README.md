@@ -170,6 +170,83 @@ Node.js is being Node.js again. Try one of these hacks:
 
 4. **Option 4**: Just update to Node.js v21+ like a normal person.
 
+5. **Option 5**: Create a `.npmrc` file to pin the problematic dependency:
+   ```
+   # Create this file in your project directory
+   cli-spinners@>=3.0.0:=2.9.2
+   ```
+   Then reinstall:
+   ```bash
+   npm uninstall -g open-agi
+   npm install -g open-agi
+   ```
+
+### Missing ripgrep Error on Windows
+
+If you see this error:
+
+```
+Error: spawn c:\Users\...\node_modules\open-agi\dist\utils\vendor\ripgrep\x64-win32\rg.exe ENOENT
+```
+
+This means OpenAGI can't find the ripgrep binary it needs for code searching. You can fix this by:
+
+1. **Option 1**: Download and install ripgrep manually using the provided script:
+   
+   Save this content as `download-ripgrep.ps1` and run it in PowerShell:
+   ```powershell
+   # Script to download ripgrep for OpenAGI
+   $ErrorActionPreference = "Stop"
+   
+   # Define constants
+   $ripgrepVersion = "13.0.0"
+   $downloadUrl = "https://github.com/BurntSushi/ripgrep/releases/download/$ripgrepVersion/ripgrep-$ripgrepVersion-x86_64-pc-windows-msvc.zip"
+   $tempZipFile = "ripgrep-temp.zip"
+   $extractDir = "ripgrep-extract"
+   $targetDir = "$env:USERPROFILE\AppData\Roaming\npm\node_modules\open-agi\dist\utils\vendor\ripgrep\x64-win32"
+   $moduleDir = "$env:USERPROFILE\AppData\Roaming\nvm\v20.18.2\node_modules\open-agi\dist\utils\vendor\ripgrep\x64-win32"
+   
+   Write-Host "Starting ripgrep download for OpenAGI..." -ForegroundColor Cyan
+   
+   # Create directories if they don't exist
+   if (-not (Test-Path $targetDir)) {
+       New-Item -Path $targetDir -ItemType Directory -Force | Out-Null
+   }
+   
+   if (-not (Test-Path $moduleDir)) {
+       New-Item -Path $moduleDir -ItemType Directory -Force | Out-Null
+   }
+   
+   # Download ripgrep
+   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+   Invoke-WebRequest -Uri $downloadUrl -OutFile $tempZipFile
+   
+   # Extract the zip file
+   Expand-Archive -Path $tempZipFile -DestinationPath $extractDir -Force
+   
+   # Copy the executable to the target directory
+   $rgPath = Get-ChildItem -Path $extractDir -Recurse -Filter "rg.exe" | Select-Object -First 1 -ExpandProperty FullName
+   if ($rgPath) {
+       Copy-Item -Path $rgPath -Destination $targetDir -Force
+       Copy-Item -Path $rgPath -Destination $moduleDir -Force
+   }
+   
+   # Clean up
+   Remove-Item -Path $tempZipFile -Force
+   Remove-Item -Path $extractDir -Recurse -Force
+   
+   Write-Host "ripgrep installation complete!" -ForegroundColor Green
+   ```
+
+2. **Option 2**: Install ripgrep globally and add it to your PATH:
+   ```powershell
+   # Install with Chocolatey
+   choco install ripgrep
+   
+   # OR install with Scoop
+   scoop install ripgrep
+   ```
+
 ## Environment Variables
 
 Create a `.env` file with your API key:

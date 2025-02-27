@@ -10,6 +10,7 @@ import { PRODUCT_NAME } from '../constants/product.js'
 // Popular AI model options
 const MODEL_OPTIONS = [
   { label: 'Claude 3.7 Sonnet', value: 'claude-3-7-sonnet-20250219' },
+  { label: 'Claude 3.5 Haiku', value: 'claude-3-5-haiku-20241022' },
 ]
 
 interface ModelConfigStepProps {

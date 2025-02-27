@@ -12,6 +12,7 @@ import { getGlobalConfig } from '../utils/config.js'
 import chalk from 'chalk'
 import { PRODUCT_NAME } from '../constants/product.js'
 import { useExitOnCtrlCD } from '../hooks/useExitOnCtrlCD.js'
+import TextInput from './TextInput.js'
 
 type Props = {
   onClose: () => void
@@ -33,20 +34,67 @@ type Setting =
       onChange(value: string): void
       type: 'enum'
     }
+  | {
+      id: string
+      label: string
+      type: 'apikey'
+      value: string
+      onChange(value: string): void
+    }
 
 export function Config({ onClose }: Props): React.ReactNode {
   const [globalConfig, setGlobalConfig] = useState(getGlobalConfig())
   const initialConfig = React.useRef(getGlobalConfig())
   const [selectedIndex, setSelectedIndex] = useState(0)
   const exitState = useExitOnCtrlCD(() => process.exit(0))
+  
+  // API key editing state
+  const [isEditingApiKey, setIsEditingApiKey] = useState(false)
+  const [apiKeyInput, setApiKeyInput] = useState(globalConfig.apiKey || '')
+  const [apiKeyVisible, setApiKeyVisible] = useState(false)
+  const [apiKeyInputCursorOffset, setApiKeyInputCursorOffset] = useState(0)
+
+  // Available models
+  const availableModels = [
+    'claude-3-7-sonnet-20250219',
+    'claude-3-5-haiku-20241022',
+  ]
 
   // TODO: Add MCP servers
   const settings: Setting[] = [
+    // Model selection
+    {
+      id: 'modelName',
+      label: 'AI Model',
+      value: globalConfig.modelName || 'claude-3-7-sonnet-20250219',
+      options: availableModels,
+      type: 'enum',
+      onChange(modelName: string) {
+        const config = { ...getGlobalConfig(), modelName }
+        saveGlobalConfig(config)
+        setGlobalConfig(config)
+      },
+    },
+    // API Key setting
+    {
+      id: 'apiKey',
+      label: 'API Key',
+      value: globalConfig.apiKey ? 
+        (apiKeyVisible ? globalConfig.apiKey : '•'.repeat(Math.min(20, globalConfig.apiKey.length))) : 
+        'Not set',
+      type: 'apikey',
+      onChange(apiKey: string) {
+        const config = { ...getGlobalConfig(), apiKey }
+        saveGlobalConfig(config)
+        setGlobalConfig(config)
+        setIsEditingApiKey(false)
+      },
+    },
     // Global settings
     ...(process.env.ANTHROPIC_API_KEY
       ? [
           {
-            id: 'apiKey',
+            id: 'customApiKey',
             label: `Use custom API key: ${chalk.bold(normalizeApiKeyForConfig(process.env.ANTHROPIC_API_KEY))}`,
             value: Boolean(
               process.env.ANTHROPIC_API_KEY &&
@@ -118,7 +166,7 @@ export function Config({ onClose }: Props): React.ReactNode {
       id: 'theme',
       label: 'Theme',
       value: globalConfig.theme,
-      options: ['light', 'dark', 'light-daltonized', 'dark-daltonized'],
+      options: ['light', 'dark', 'light-daltonized', 'dark-daltonized', 'openagi'],
       type: 'enum',
       onChange(theme: GlobalConfig['theme']) {
         const config = { ...getGlobalConfig(), theme }
@@ -149,10 +197,31 @@ export function Config({ onClose }: Props): React.ReactNode {
   ]
 
   useInput((input, key) => {
+    // If editing API key, handle that separately
+    if (isEditingApiKey) {
+      if (key.escape) {
+        setIsEditingApiKey(false)
+        setApiKeyInput(globalConfig.apiKey || '')
+        return
+      }
+      return
+    }
+    
     if (key.escape) {
       // Log any changes that were made
       // TODO: Make these proper messages
       const changes: string[] = []
+      
+      // Check for model changes
+      if (globalConfig.modelName !== initialConfig.current.modelName) {
+        changes.push(`  ⎿  Set model to ${chalk.bold(globalConfig.modelName)}`)
+      }
+      
+      // Check for API key changes
+      if (globalConfig.apiKey !== initialConfig.current.apiKey) {
+        changes.push(`  ⎿  Updated API key`)
+      }
+      
       // Check for API key changes
       const initialUsingCustomKey = Boolean(
         process.env.ANTHROPIC_API_KEY &&
@@ -210,6 +279,12 @@ export function Config({ onClose }: Props): React.ReactNode {
         setting.onChange(setting.options[nextIndex]!)
         return
       }
+      
+      if (setting.type === 'apikey') {
+        // Enter API key editing mode
+        setIsEditingApiKey(true)
+        return
+      }
     }
 
     if (key.return || input === ' ') {
@@ -224,7 +299,22 @@ export function Config({ onClose }: Props): React.ReactNode {
     if (key.downArrow) {
       setSelectedIndex(prev => Math.min(settings.length - 1, prev + 1))
     }
+    
+    // Toggle API key visibility with 'v' key
+    if (input === 'v') {
+      const setting = settings[selectedIndex]
+      if (setting && setting.id === 'apiKey') {
+        setApiKeyVisible(!apiKeyVisible)
+      }
+    }
   })
+
+  function handleApiKeySubmit(value: string) {
+    const setting = settings.find(s => s.id === 'apiKey') as Setting | undefined
+    if (setting && setting.type === 'apikey' && setting.onChange) {
+      setting.onChange(value)
+    }
+  }
 
   return (
     <>
@@ -243,6 +333,34 @@ export function Config({ onClose }: Props): React.ReactNode {
         {settings.map((setting, i) => {
           const isSelected = i === selectedIndex
 
+          // If we're editing the API key and this is the API key setting
+          if (isEditingApiKey && setting.id === 'apiKey') {
+            return (
+              <Box key={setting.id} height={2} minHeight={2}>
+                <Box width={10}>
+                  <Text color={isSelected ? 'blue' : undefined}>
+                    {isSelected ? figures.pointer : ' '} {setting.label}:
+                  </Text>
+                </Box>
+                <Box>
+                  <TextInput
+                    value={apiKeyInput}
+                    onChange={setApiKeyInput}
+                    onSubmit={handleApiKeySubmit}
+                    placeholder="Enter your API key"
+                    mask={apiKeyVisible ? undefined : '*'}
+                    cursorOffset={apiKeyInputCursorOffset}
+                    onChangeCursorOffset={setApiKeyInputCursorOffset}
+                    columns={30}
+                  />
+                </Box>
+                <Box marginLeft={2}>
+                  <Text dimColor><Text bold>ESC</Text> to cancel</Text>
+                </Box>
+              </Box>
+            )
+          }
+
           return (
             <Box key={setting.id} height={2} minHeight={2}>
               <Box width={44}>
@@ -260,6 +378,9 @@ export function Config({ onClose }: Props): React.ReactNode {
                     {setting.value.toString()}
                   </Text>
                 )}
+                {isSelected && setting.id === 'apiKey' && (
+                  <Text dimColor> (press 'v' to {apiKeyVisible ? 'hide' : 'show'})</Text>
+                )}
               </Box>
             </Box>
           )
@@ -269,6 +390,8 @@ export function Config({ onClose }: Props): React.ReactNode {
         <Text dimColor>
           {exitState.pending ? (
             <>Press {exitState.keyName} again to exit</>
+          ) : isEditingApiKey ? (
+            <>Enter to save · Esc to cancel</>
           ) : (
             <>↑/↓ to select · Enter/Space to change · Esc to close</>
           )}
