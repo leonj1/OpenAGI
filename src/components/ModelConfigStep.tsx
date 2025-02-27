@@ -64,7 +64,7 @@ export function ModelConfigStep({ onComplete }: ModelConfigStepProps): React.Rea
   }
 
   // Handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate inputs
     if (!apiKey) {
       setErrorMessage('API key is required')
@@ -80,9 +80,18 @@ export function ModelConfigStep({ onComplete }: ModelConfigStepProps): React.Rea
     // Show validation spinner
     setIsValidating(true)
 
-    // Simulate validation (in a real app, you would verify the API key here)
-    setTimeout(() => {
-      setIsValidating(false)
+    try {
+      // Import the verifyApiKey function
+      const { verifyApiKey } = await import('../services/claude.js')
+      
+      // Verify the API key
+      const isValid = await verifyApiKey(apiKey)
+      
+      if (!isValid) {
+        setErrorMessage('Invalid API key. Please check and try again.')
+        setIsValidating(false)
+        return
+      }
       
       // Determine which model name to use
       const modelName = selectedModelOption.value === 'custom' 
@@ -91,7 +100,11 @@ export function ModelConfigStep({ onComplete }: ModelConfigStepProps): React.Rea
         
       // Call the completion handler with the model name and API key
       onComplete(modelName, apiKey)
-    }, 1500)
+    } catch (error) {
+      setIsValidating(false)
+      setErrorMessage('Error validating API key. Please try again.')
+      console.error('API key validation error:', error)
+    }
   }
 
   return (
@@ -174,13 +187,11 @@ export function ModelConfigStep({ onComplete }: ModelConfigStepProps): React.Rea
           ) : (
             <Box>
               <Text 
-                backgroundColor={theme.openagi} 
-                color={theme.text} 
+                color={theme.text}
+                backgroundColor={theme.openagi}
                 bold
-                paddingLeft={2} 
-                paddingRight={2}
               >
-                Connect
+                {'  Connect  '}
               </Text>
             </Box>
           )}

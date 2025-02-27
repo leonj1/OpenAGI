@@ -221,26 +221,41 @@ export function getGlobalConfig(): GlobalConfig {
 export function getAnthropicApiKey(): null | string {
   const config = getGlobalConfig()
 
+  // Special cases for specific user types
   if (process.env.USER_TYPE === 'SWE_BENCH') {
     return process.env.ANTHROPIC_API_KEY_OVERRIDE ?? null
   }
-
-  if (process.env.USER_TYPE === 'external') {
-    return config.primaryApiKey ?? null
-  }
-
-  if (process.env.USER_TYPE === 'ant') {
-    if (
-      process.env.ANTHROPIC_API_KEY &&
-      config.customApiKeyResponses?.approved?.includes(
-        normalizeApiKeyForConfig(process.env.ANTHROPIC_API_KEY),
-      )
-    ) {
+  
+  if (process.env.USER_TYPE === 'ant' && process.env.ANTHROPIC_API_KEY) {
+    // For Anthropic employee with a custom API key in env
+    if (config.customApiKeyResponses?.approved?.includes(
+      normalizeApiKeyForConfig(process.env.ANTHROPIC_API_KEY)
+    )) {
       return process.env.ANTHROPIC_API_KEY
     }
-    return config.primaryApiKey ?? null
   }
 
+  // For the typical user scenario, check in this order:
+  // 1. User-saved API key from config
+  // 2. Primary API key set via OAuth
+  // 3. Environment variable (if approved)
+  // 4. Return null if none found
+  
+  if (config.apiKey) {
+    return config.apiKey
+  }
+  
+  if (config.primaryApiKey) {
+    return config.primaryApiKey
+  }
+  
+  if (process.env.ANTHROPIC_API_KEY && 
+      config.customApiKeyResponses?.approved?.includes(
+        normalizeApiKeyForConfig(process.env.ANTHROPIC_API_KEY)
+      )) {
+    return process.env.ANTHROPIC_API_KEY
+  }
+  
   return null
 }
 

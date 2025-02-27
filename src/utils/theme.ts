@@ -12,6 +12,7 @@ export interface Theme {
   success: string
   error: string
   warning: string
+  openagi: string // Custom accent color for OpenAGI theme
   diff: {
     added: string
     removed: string
@@ -31,6 +32,7 @@ const lightTheme: Theme = {
   success: '#2c7a39',
   error: '#ab2b3f',
   warning: '#966c1e',
+  openagi: '#5769f7',
   diff: {
     added: '#69db7c',
     removed: '#ffa8b4',
@@ -50,6 +52,7 @@ const lightDaltonizedTheme: Theme = {
   success: '#006699', // Blue instead of green
   error: '#cc0000', // Pure red for better distinction
   warning: '#ff9900', // Orange adjusted for deuteranopia
+  openagi: '#3366ff',
   diff: {
     added: '#99ccff', // Light blue instead of green
     removed: '#ffcccc', // Light red for better contrast
@@ -69,6 +72,7 @@ const darkTheme: Theme = {
   success: '#4eba65',
   error: '#ff6b80',
   warning: '#ffc107',
+  openagi: '#b1b9f9',
   diff: {
     added: '#225c2b',
     removed: '#7a2936',
@@ -88,6 +92,7 @@ const darkDaltonizedTheme: Theme = {
   success: '#3399ff', // Bright blue instead of green
   error: '#ff6666', // Bright red for better visibility
   warning: '#ffcc00', // Yellow-orange for deuteranopia
+  openagi: '#99ccff',
   diff: {
     added: '#004466', // Dark blue instead of green
     removed: '#660000', // Dark red for better contrast
@@ -108,6 +113,7 @@ const openAgiTheme: Theme = {
   success: '#4ade80',    // Vibrant green
   error: '#f87171',      // Vibrant red
   warning: '#fbbf24',    // Amber yellow
+  openagi: '#42a5f5',
   diff: {
     added: '#34d399',    // Emerald green
     removed: '#fb7185',  // Rose red
