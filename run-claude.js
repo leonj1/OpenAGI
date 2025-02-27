@@ -128,7 +128,7 @@ try {
   // Execute directly to maintain interactive input
   const { spawn } = await import('child_process');
   
-  const proc = spawn('node', [cliPath, ...cliArgs], {
+  const proc = spawn('node', ['--experimental-json-modules', cliPath, ...cliArgs], {
     stdio: 'inherit',
     env: process.env
   });

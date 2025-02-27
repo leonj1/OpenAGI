@@ -25,8 +25,9 @@ import { AsciiLogo } from './AsciiLogo.js'
 import { AnimatedClaudeAsterisk } from './AnimatedClaudeAsterisk.js'
 import { Spinner, SimpleSpinner } from './Spinner.js'
 import { AnimatedStartup } from './AnimatedStartup.js'
+import { ModelConfigStep } from './ModelConfigStep.js'
 
-type StepId = 'theme' | 'oauth' | 'api-key' | 'usage' | 'security' | 'welcome'
+type StepId = 'theme' | 'oauth' | 'api-key' | 'usage' | 'security' | 'welcome' | 'model-config'
 
 interface OnboardingStep {
   id: StepId
@@ -192,6 +193,16 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
 
   function handleThemePreview(newTheme: string) {
     setSelectedTheme(newTheme as ThemeNames)
+  }
+  
+  function handleModelConfig(modelName: string, apiKey: string) {
+    // Save the model name and API key to the global config
+    saveGlobalConfig({
+      ...config,
+      modelName,
+      apiKey,
+    })
+    goToNextStep()
   }
 
   const exitState = useExitOnCtrlCD(() => process.exit(0))
@@ -394,7 +405,7 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
         <Box flexDirection="column" gap={1} width={70}>
           <OrderedList>
             <OrderedList.Item>
-              <Text bold>Claude Code is currently in research preview</Text>
+              <Text bold>{PRODUCT_NAME} is currently in research preview</Text>
               <Text color={theme.secondaryText} wrap="wrap">
                 This beta version may have limitations or unexpected behaviors.
                 <Newline />
@@ -403,9 +414,9 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
               </Text>
             </OrderedList.Item>
             <OrderedList.Item>
-              <Text bold>Claude can make mistakes</Text>
+              <Text bold>AI models can make mistakes</Text>
               <Text color={theme.secondaryText} wrap="wrap">
-                You should always review Claude&apos;s responses, especially when
+                You should always review AI responses, especially when
                 <Newline />
                 running code.
                 <Newline />
@@ -491,6 +502,11 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
     </Box>
   )
 
+  // Model configuration step
+  const modelConfigStep = (
+    <ModelConfigStep onComplete={handleModelConfig} />
+  )
+
   // Create the steps array - determine which steps to include based on reAuth and oauthEnabled
   const apiKeyNeedingApproval = useMemo(() => {
     if (process.env.USER_TYPE !== 'ant') {
@@ -515,6 +531,9 @@ export function Onboarding({ onDone }: Props): React.ReactNode {
   
   // Add theme step
   steps.push({ id: 'theme', component: themeStep })
+  
+  // Add model configuration step
+  steps.push({ id: 'model-config', component: modelConfigStep })
 
   // Skip OAuth step - authentication is disabled
   // if (oauthEnabled) {

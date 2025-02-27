@@ -123,6 +123,57 @@ See the `examples` directory for more usage examples, including:
 - Working with different models
 - Advanced file operations
 
+## Troubleshooting
+
+### JSON Import Error on Linux/Node.js v20
+
+If you encounter the following error:
+
+```
+SyntaxError: Unexpected token 'with'
+    at DefaultModuleLoader.moduleStrategy (node:internal/modules/esm/translators:116:18)
+```
+
+This is due to the experimental JSON import syntax used in some dependencies. You can fix this by:
+
+1. **Option 1**: Run with the experimental flag:
+   ```bash
+   node --experimental-json-modules $(which openagi)
+   ```
+
+2. **Option 2**: Create an alias in your shell configuration:
+   ```bash
+   # Add to your .bashrc or .zshrc
+   alias openagi='node --experimental-json-modules $(which openagi)'
+   ```
+
+3. **Option 3**: Use the provided wrapper scripts:
+   
+   For Linux/macOS:
+   ```bash
+   # Make the script executable
+   chmod +x openagi-fix.sh
+   
+   # Run OpenAGI with the script
+   ./openagi-fix.sh "Your prompt here"
+   ```
+   
+   For Windows (PowerShell):
+   ```powershell
+   # Run OpenAGI with the script
+   .\openagi-fix.ps1 "Your prompt here"
+   ```
+
+4. **Option 4**: Update to Node.js v21+ which has better support for this feature.
+
+## Environment Variables
+
+Create a `.env` file in your project directory with:
+
+```
+ANTHROPIC_API_KEY=your_api_key_here
+```
+
 ## License
 
 MIT

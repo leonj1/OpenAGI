@@ -114,6 +114,8 @@ export type GlobalConfig = {
   oauthAccount?: AccountInfo
   iterm2KeyBindingInstalled?: boolean // Legacy - keeping for backward compatibility
   shiftEnterKeyBindingInstalled?: boolean
+  modelName?: string // The AI model to use
+  apiKey?: string // The API key for the selected model
 }
 
 export const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
@@ -126,6 +128,7 @@ export const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
     approved: [],
     rejected: [],
   },
+  modelName: 'claude-3-opus-20240229', // Default to Claude 3 Opus
 }
 
 export const GLOBAL_CONFIG_KEYS = [
@@ -138,7 +141,8 @@ export const GLOBAL_CONFIG_KEYS = [
   'customApiKeyResponses',
   'primaryApiKey',
   'preferredNotifChannel',
-  'shiftEnterKeyBindingInstalled',
+  'modelName',
+  'apiKey',
 ] as const
 
 export type GlobalConfigKey = (typeof GLOBAL_CONFIG_KEYS)[number]
@@ -574,4 +578,15 @@ export function listConfigForCLI(global: boolean): object {
   } else {
     return pick(getCurrentProjectConfig(), PROJECT_CONFIG_KEYS)
   }
+}
+
+// Add this new function to reset onboarding status
+export function resetOnboardingStatus(): void {
+  const config = getGlobalConfig()
+  saveGlobalConfig({
+    ...config,
+    hasCompletedOnboarding: false,
+    lastOnboardingVersion: undefined
+  })
+  console.log('Onboarding status has been reset. Run the app again to see the onboarding flow.')
 }
