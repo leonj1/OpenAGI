@@ -1,23 +1,27 @@
 # OpenAGI
 
-Advanced AI-powered coding assistant with direct filesystem access.
+AI-powered coding assistant with direct filesystem access. No login required, just your API key.
 
 <div align="center">
   <img src="https://via.placeholder.com/800x400?text=OpenAGI" alt="OpenAGI Logo" width="400" />
 </div>
 
-## Overview
+## What is this thing?
 
-OpenAGI provides developers with a powerful AI assistant capable of directly interacting with files, running commands, and providing intelligent code assistance. This standalone version allows integration with custom language models for maximum flexibility.
+OpenAGI is a standalone coding assistant built from the TypeScript code extracted from the official Claude Code package by Anthropic (https://www.npmjs.com/package/@anthropic-ai/claude-code). 
+
+The original extraction work was done by [dnakov/claude-code](https://github.com/dnakov/claude-code/), which I've forked and enhanced by removing the authentication requirements. Now you can use all the features with just an Anthropic API key - no login process needed.
+
+Future plans include adding support for multiple AI models through the [Vercel AI SDK](https://github.com/vercel/ai), making this tool even more versatile.
 
 ## Features
 
-- **Direct File Operations**: Edit, search, and analyze your codebase
-- **Command Execution**: Run commands without leaving the interface
-- **Model Flexibility**: Use Claude, GPT-4, or any custom model
-- **Smart Code Understanding**: Analyze and understand complex codebases
-- **Multi-Directory Support**: Switch working directories with ease
-- **Cross-Platform**: Works on Windows, macOS, and Linux
+- **Direct File Operations**: Let AI edit your code while you grab another energy drink
+- **Command Execution**: Run terminal stuff without switching windows (productivity hack!)
+- **Model Flexibility**: Coming soon
+- **Smart Code Understanding**: It actually gets your spaghetti code somehow
+- **Multi-Directory Support**: Jump around your project like a coding ninja
+- **Cross-Platform**: Works wherever you do (Windows/Mac/Linux)
 
 ## Installation
 
@@ -87,18 +91,18 @@ main();
 
 ## Available Tools
 
-OpenAGI provides the following tools:
+This thing comes with some serious firepower:
 
-- **Bash**: Execute shell commands
-- **Glob**: Find files using glob patterns
-- **Grep**: Search file contents with regex
-- **LS**: List directory contents
-- **View**: Read file contents
-- **Edit**: Make precise edits to files
-- **Replace**: Completely replace file contents
-- **Notebook**: Read and edit Jupyter notebooks
-- **Think**: AI reflection and planning capabilities
-- **Memory**: Store and retrieve information across sessions
+- **Bash**: Shell commands go brrr
+- **Glob**: Find files faster than you can say "regex"
+- **Grep**: Search your codebase like a boss
+- **LS**: List dirs because typing 'ls' is too much work
+- **View**: Read files without opening them (mind blown)
+- **Edit**: Make surgical code edits while you chill
+- **Replace**: Nuke entire files when you're feeling dangerous
+- **Notebook**: Jupyter notebook support because why not
+- **Think**: Let AI plan stuff while you take credit
+- **Memory**: It remembers things so you don't have to
 
 ## Development
 
@@ -127,27 +131,27 @@ See the `examples` directory for more usage examples, including:
 
 ### JSON Import Error on Linux/Node.js v20
 
-If you encounter the following error:
+If you see this error:
 
 ```
 SyntaxError: Unexpected token 'with'
     at DefaultModuleLoader.moduleStrategy (node:internal/modules/esm/translators:116:18)
 ```
 
-This is due to the experimental JSON import syntax used in some dependencies. You can fix this by:
+Node.js is being Node.js again. Try one of these hacks:
 
-1. **Option 1**: Run with the experimental flag:
+1. **Option 1**: The experimental flag way:
    ```bash
    node --experimental-json-modules $(which openagi)
    ```
 
-2. **Option 2**: Create an alias in your shell configuration:
+2. **Option 2**: The lazy alias way:
    ```bash
    # Add to your .bashrc or .zshrc
    alias openagi='node --experimental-json-modules $(which openagi)'
    ```
 
-3. **Option 3**: Use the provided wrapper scripts:
+3. **Option 3**: Use my wrapper scripts because I thought of everything:
    
    For Linux/macOS:
    ```bash
@@ -164,11 +168,11 @@ This is due to the experimental JSON import syntax used in some dependencies. Yo
    .\openagi-fix.ps1 "Your prompt here"
    ```
 
-4. **Option 4**: Update to Node.js v21+ which has better support for this feature.
+4. **Option 4**: Just update to Node.js v21+ like a normal person.
 
 ## Environment Variables
 
-Create a `.env` file in your project directory with:
+Create a `.env` file with your API key:
 
 ```
 ANTHROPIC_API_KEY=your_api_key_here
@@ -176,4 +180,4 @@ ANTHROPIC_API_KEY=your_api_key_here
 
 ## License
 
-MIT
+MIT (feel free to do whatever, I'm not your boss)
