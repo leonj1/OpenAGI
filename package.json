@@ -13,7 +13,35 @@
     "build": "ts-node --transpileOnly ./scripts/build.js",
     "build:tsc": "tsc --skipLibCheck",
     "build:no-types": "node ./scripts/build-no-typechecking.js",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "npm run build:no-types"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mandeep511/OpenAGI.git"
+  },
+  "keywords": [
+    "ai",
+    "assistant",
+    "coding",
+    "cli",
+    "claude",
+    "anthropic",
+    "filesystem",
+    "developer-tools",
+    "claude code",
+    "claude sonnet",
+    "openagi",
+    "openagi-cli"
+  ],
+  "author": "Mandeep Bagga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mandeep511/OpenAGI/issues"
+  },
+  "homepage": "https://github.com/mandeep511/OpenAGI#readme",
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@anthropic-ai/bedrock-sdk": "^0.12.4",

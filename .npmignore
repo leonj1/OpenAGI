@@ -1,0 +1,59 @@
+# Source files (we only need the compiled output)
+src/
+
+# Development configuration
+.eslintrc.json
+eslint.config.js
+tsconfig.json
+babel.config.js
+jest.config.js
+
+# Git files
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# Development environment
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Test files
+__tests__/
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Documentation files that aren't needed in the package
+docs/
+project-structure.md
+
+# Temporary files
+tmp/
+temp/
+
+# Claude Code specific
+.claude/
+.claude.json
+
+# Misc
+.npmrc
+.yarnrc
+.travis.yml
+.gitlab-ci.yml
+.editorconfig 
