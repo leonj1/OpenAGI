@@ -8,14 +8,9 @@
     "openagi": "dist/entrypoints/cli.js"
   },
   "scripts": {
-    "cli": "node cli.js",
-    "start": "node --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' --loader ts-node/esm --experimental-specifier-resolution=node --experimental-json-modules src/index.ts",
-    "dev": "nodemon --watch src -e ts,tsx --exec \"node --import 'data:text/javascript,import { register } from \\\"node:module\\\"; import { pathToFileURL } from \\\"node:url\\\"; register(\\\"ts-node/esm\\\", pathToFileURL(\\\"./\\\"));' --loader ts-node/esm --experimental-specifier-resolution=node --experimental-json-modules\" src/index.ts",
+    "cli": "node dist/entrypoints/cli.js",
     "reset:onboarding": "node --experimental-json-modules -e \"import { resetOnboardingStatus } from './dist/utils/config.js'; resetOnboardingStatus();\"",
-    "build": "ts-node --transpileOnly ./scripts/build.js",
-    "build:tsc": "tsc --skipLibCheck",
     "build:no-types": "node ./scripts/build-no-typechecking.js",
-    "test": "jest",
     "prepublishOnly": "npm run build:no-types"
   },
   "repository": {

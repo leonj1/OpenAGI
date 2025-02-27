@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="300" height="380" viewBox="0 0 300 380" xmlns="http://www.w3.org/2000/svg">
+  <!-- Definitions -->
+  <defs>
+    <!-- Terminal Gradient - Refined glass-like effect -->
+    <linearGradient id="terminalGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2c2c2e"/>
+      <stop offset="40%" stop-color="#222224"/>
+      <stop offset="100%" stop-color="#1c1c1e"/>
+    </linearGradient>
+
+    <!-- Better Icon Glow Gradient -->
+    <radialGradient id="glowGradient" cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#f6ad55" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#f6ad55" stop-opacity="0.4"/>
+      <stop offset="70%" stop-color="#f6ad55" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#f6ad55" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Orange Highlight -->
+    <linearGradient id="orangeHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6ad55"/>
+      <stop offset="100%" stop-color="#ed8936"/>
+    </linearGradient>
+    
+    <!-- Title Text Gradient -->
+    <linearGradient id="titleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2d3748"/>
+      <stop offset="100%" stop-color="#1a202c"/>
+    </linearGradient>
+    
+    <!-- Subtitle Gradient -->
+    <linearGradient id="subtitleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a5568"/>
+      <stop offset="50%" stop-color="#718096"/>
+      <stop offset="100%" stop-color="#4a5568"/>
+    </linearGradient>
+
+    <!-- Enhanced Drop Shadow -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="5" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.35"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+    
+    <!-- Subtle Text Shadow -->
+    <filter id="textShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+      <feOffset dx="0" dy="1" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+    
+    <!-- Terminal Text Shadow -->
+    <filter id="terminalTextShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
+      <feOffset dx="0" dy="0.5" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.8"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+    
+    <!-- Enhanced Glass Reflection -->
+    <linearGradient id="glassReflection" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.3"/>
+      <stop offset="15%" stop-color="white" stop-opacity="0.15"/>
+      <stop offset="40%" stop-color="white" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Terminal Content Animation -->
+    <style type="text/css"><![CDATA[
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+      .cursor {
+        animation: blink 1.2s infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 0.7; }
+      }
+      .pulse {
+        animation: pulse 4s infinite;
+      }
+      @keyframes fadeInOut {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 0.5; }
+      }
+      .fadeBeams {
+        animation: fadeInOut 6s infinite;
+      }
+      @keyframes subtitleShimmer {
+        0% { opacity: 0.7; }
+        50% { opacity: 1; }
+        100% { opacity: 0.7; }
+      }
+      .shimmerText {
+        animation: subtitleShimmer 6s infinite;
+      }
+    ]]></style>
+  </defs>
+  
+  <!-- Aura/Glow Effects (Multiple Layers) -->
+  <circle cx="150" cy="180" r="140" fill="url(#glowGradient)" opacity="0.4" class="pulse"/>
+  <circle cx="150" cy="180" r="110" fill="url(#glowGradient)" opacity="0.6"/>
+  <circle cx="150" cy="180" r="90" fill="url(#glowGradient)" opacity="0.3"/>
+  
+  <!-- Terminal App Icon - Rounded Square Base (Apple style) -->
+  <rect x="50" y="80" width="200" height="200" rx="45" fill="url(#terminalGradient)" filter="url(#dropShadow)"/>
+  
+  <!-- Glass Reflection -->
+  <rect x="50" y="80" width="200" height="80" rx="45" fill="url(#glassReflection)" opacity="0.4"/>
+  
+  <!-- Terminal Header Bar -->
+  <rect x="70" y="100" width="160" height="25" rx="8" fill="#2d3748" opacity="0.9"/>
+  
+  <!-- Window Control Buttons with subtle gradients -->
+  <circle cx="85" cy="112" r="5" fill="#f56565"/>
+  <circle cx="85" cy="112" r="3" fill="#e53e3e" opacity="0.7"/>
+  
+  <circle cx="103" cy="112" r="5" fill="#f6ad55"/>
+  <circle cx="103" cy="112" r="3" fill="#ed8936" opacity="0.7"/>
+  
+  <circle cx="121" cy="112" r="5" fill="#48bb78"/>
+  <circle cx="121" cy="112" r="3" fill="#38a169" opacity="0.7"/>
+  
+  <!-- Terminal Content - Code Lines with enhanced typography -->
+  <g filter="url(#terminalTextShadow)">
+    <text x="80" y="150" fill="#e2e8f0" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="10" letter-spacing="0.2px">$ ./openagi</text>
+    <text x="80" y="170" fill="#e2e8f0" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="10" letter-spacing="0.2px">> initializing...</text>
+    <text x="80" y="190" fill="url(#orangeHighlight)" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="10" font-weight="500" letter-spacing="0.2px">> auth bypassed</text>
+    <text x="80" y="210" fill="#e2e8f0" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="10" letter-spacing="0.2px">> ready</text>
+    <text x="80" y="230" fill="#e2e8f0" font-family="SF Mono, Menlo, Monaco, Consolas, monospace" font-size="10" class="cursor" letter-spacing="0.2px">_</text>
+  </g>
+  
+  <!-- Subtle Interior Glow Effect -->
+  <rect x="70" y="135" width="160" height="120" rx="8" fill="none" stroke="url(#orangeHighlight)" stroke-width="0.5" opacity="0.6"/>
+  
+  <!-- Command rays/beams emanating from the terminal - Subtle animation with 'fadeBeams' class -->
+  <g class="fadeBeams">
+    <path d="M50,180 L10,180" stroke="url(#orangeHighlight)" stroke-width="1.5" opacity="0.5" stroke-dasharray="1,2"/>
+    <path d="M250,180 L290,180" stroke="url(#orangeHighlight)" stroke-width="1.5" opacity="0.5" stroke-dasharray="1,2"/>
+    <path d="M150,80 L150,40" stroke="url(#orangeHighlight)" stroke-width="1.5" opacity="0.5" stroke-dasharray="1,2"/>
+    <path d="M150,280 L150,320" stroke="url(#orangeHighlight)" stroke-width="1.5" opacity="0.5" stroke-dasharray="1,2"/>
+    
+    <path d="M80,110 L40,70" stroke="url(#orangeHighlight)" stroke-width="1" opacity="0.4" stroke-dasharray="1,2"/>
+    <path d="M220,110 L260,70" stroke="url(#orangeHighlight)" stroke-width="1" opacity="0.4" stroke-dasharray="1,2"/>
+    <path d="M80,250 L40,290" stroke="url(#orangeHighlight)" stroke-width="1" opacity="0.4" stroke-dasharray="1,2"/>
+    <path d="M220,250 L260,290" stroke="url(#orangeHighlight)" stroke-width="1" opacity="0.4" stroke-dasharray="1,2"/>
+  </g>
+
+  <!-- Subtle Inner Shadow for Terminal -->
+  <rect x="70" y="135" width="160" height="120" rx="8" fill="none" filter="url(#dropShadow)" opacity="0.1"/>
+  
+  <!-- Premium Typography for Logo Text -->
+  <!-- Title Text with enhanced styling -->
+  <g filter="url(#textShadow)">
+    <!-- Text outline for depth -->
+    <text x="150" y="345" text-anchor="middle" fill="none" stroke="#1a202c" stroke-width="0.7" opacity="0.6" font-family="SF Pro Display, -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="30" letter-spacing="1.2px">OpenAGI</text>
+    
+    <!-- Main text fill with gradient -->
+    <text x="150" y="345" text-anchor="middle" fill="url(#titleGradient)" font-family="SF Pro Display, -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="30" letter-spacing="1.2px">OpenAGI</text>
+  </g>
+  
+  <!-- Subtitle with shimmer effect -->
+  <text x="150" y="370" text-anchor="middle" fill="url(#subtitleGradient)" class="shimmerText" font-family="SF Pro Text, -apple-system, BlinkMacSystemFont, Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="11" letter-spacing="1.8px" text-transform="uppercase">Coding Assistant</text>
+</svg> 
