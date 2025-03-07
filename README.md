@@ -8,7 +8,7 @@ AI-powered coding assistant with direct filesystem access. No login required, ju
 
 ## What is this thing?
 
-OpenAGI is a standalone coding assistant built from the TypeScript code extracted from the official Claude Code package by Anthropic. I've forked and removed the authentication requirements. Now you can use all the features with just an Anthropic API key - no login process needed.
+OpenAGI is a standalone coding assistant built from the TypeScript code extracted from the official Claude Code package by Anthropic. I've removed the authentication requirements. Now you can use all the features with just an Anthropic API key - no login process needed.
 
 ## Features
 
